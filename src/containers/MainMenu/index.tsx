@@ -4,25 +4,28 @@ import { Button, CircularProgress } from '@mui/material';
 function MainMenu() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch('http://localhost:3002/');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      setError(error.message);
-    }
-
-    setLoading(false);
+    fetch('https://ill-tan-elk-vest.cyclic.app')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((json) => {
+        setData(json);
+      })
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
